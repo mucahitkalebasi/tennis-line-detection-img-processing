@@ -89,22 +89,22 @@ class TennisCourtModel:
     def get_ground_truth_dataset(self):
         ground_truth_pixels = {
 
-            "top_left" :            [(161,82), (596,237), (145,235), (337,168), (288,142)],
-            "top_right" :           [(450,82), (1373,239), (428,105), (1082,170), (1069,132)],
-            "bottom_left" :         [(70,323), (276,788), (896,563), (23,697), (30,707)],
-            "bottom_right" :        [(542,323), (1689,798), (1054,271), (1379,702), (1451,693)],
-            "middle_left" :         [(126,173), (484,432), (425,362), (228,354), (197,342)],
-            "middle_right" :        [(485,173), (1482,435), (688,172), (1184,355), (1201,330)],
-            "left_middle_top" :     [(198,82), (693,238), (188,215), (431,168), (386,142)],
-            "left_middle_bottom" :  [(128,324), (455,789), (924,512), (196,697), (211,704)],
-            "right_middle_top" :    [(414,82), (1275,240), (400,118), (988,170), (972,137)],
-            "right_middle_bottom" : [(483,323), (1506,796), (1041,296), (1206,700), (1268,694)],
-            "middle_top" :          [(306,119), (982,318), (416,198), (708,244), (688,220)],
-            "middle_bottom" :       [(306,244), (980,596), (777,318), (704,512), (716,502)],
-            "second_middle_left" :  [(187,119), (660,316), (301,261), (398,243), (362,222)],
-            "second_middle_right" : [(425,119), (1306,318), (508,148), (1018,245), (1013,216)],
-            "middle_bottom_left" :  [(151,244), (539,594), (683,417), (280,510), (272,506)],
-            "middle_bottom_right" : [(461,244), (1423,599), (849,242), (1128,513), (1163,498)]
+            "top_left" :            [(161,82), (596,237), (145,235)],
+            "top_right" :           [(450,82), (1373,239), (428,105)],
+            "bottom_left" :         [(70,323), (276,788), (896,563)],
+            "bottom_right" :        [(542,323), (1689,798), (1054,271)],
+            "middle_left" :         [(126,173), (484,432), (425,362)],
+            "middle_right" :        [(485,173), (1482,435), (688,172)],
+            "left_middle_top" :     [(198,82), (693,238), (188,215)],
+            "left_middle_bottom" :  [(128,324), (455,789), (924,512)],
+            "right_middle_top" :    [(414,82), (1275,240), (400,118)],
+            "right_middle_bottom" : [(483,323), (1506,796), (1041,296)],
+            "middle_top" :          [(306,119), (982,318), (416,198)],
+            "middle_bottom" :       [(306,244), (980,596), (777,318)],
+            "second_middle_left" :  [(187,119), (660,316), (301,261)],
+            "second_middle_right" : [(425,119), (1306,318), (508,148)],
+            "middle_bottom_left" :  [(151,244), (539,594), (683,417)],
+            "middle_bottom_right" : [(461,244), (1423,599), (849,242)]
         }
         ground_truth_dataset = pd.DataFrame(ground_truth_pixels)
         ground_truth_dataset = self.preprocess_dataset(ground_truth_dataset)
@@ -119,8 +119,7 @@ class TennisCourtModel:
             dataset = dataset.reset_index()
             dataset.rename(columns = {'index':'point_name'}, inplace = True)
             dataset.rename(columns={0: "image_0", 1: "image_1",
-                                    2: "image_2", 3: "image_3", 
-                                    4: "image_4"}, inplace=True)
+                                    2: "image_2"}, inplace=True)
 
         else: 
             dataset = dataset.reset_index()

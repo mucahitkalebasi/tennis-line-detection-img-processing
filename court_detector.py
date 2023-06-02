@@ -7,7 +7,7 @@ from tennis_court_model import TennisCourtModel
 import ast
 import math
 
-class CourtDetector:
+class CourtLineDetector:
 
   def __init__(self):
     self.colour_threshold = 200
