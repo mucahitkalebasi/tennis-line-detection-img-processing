@@ -1,3 +1,4 @@
+#%%
 
 import cv2
 import matplotlib.pyplot as plt
@@ -7,7 +8,6 @@ from tennis_line_detector import CourtLineDetector
 from tennis_court_model import TennisCourtModel
 import numpy as np
 
-
 tennis_line_detector = CourtLineDetector()
 tennis_court_model = TennisCourtModel()
 
@@ -16,7 +16,7 @@ def create_dataset():
     ground_truth_dataset = tennis_court_model.get_ground_truth_dataset()
     prediction_data = tennis_court_model.get_raw_prediction_dataset()
 
-    img_paths = ["court_images\\court_reference01.jpg", "court_images\\court_reference02.jpg", "court_images\\court_reference03.jpg"]
+    img_paths = ["evaluation_images\\court_reference01.jpg", "evaluation_images\\court_reference02.jpg", "evaluation_images\\court_reference03.jpg"]
 
     for idx, img_path in enumerate(img_paths):
         start = default_timer()
@@ -39,32 +39,6 @@ def create_dataset():
 
 
 def evaluate_court():
-    ground_truth_dataset = pd.read_csv("ground_truth_data.csv", index_col=0)
-    prediction_dataset = pd.read_csv("prediction_data.csv", index_col=0)
-    tol = 5 # tolerance
-    results = tennis_line_detector.calculate_scores(ground_truth_dataset, prediction_dataset, tol)
-
-
-    labels = list(results.keys())
-    precision_vals = [val['Precision'] for val in results.values()]
-    recall_vals = [val['Recall'] for val in results.values()]
-    f1_vals = [val['F1-score'] for val in results.values()]
-
-    x = np.arange(len(labels))  # the label locations
-    width = 0.3  # the width of the bars
-
-    fig, ax = plt.subplots(figsize=(16, 9))
-    rects1 = ax.bar(x - width, precision_vals, width, label='Precision')
-    rects2 = ax.bar(x, recall_vals, width, label='Recall')
-    rects3 = ax.bar(x + width, f1_vals, width, label='F1-score')
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Scores')
-    ax.set_title('Scores by image and metric')
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels)
-    ax.legend()
-
     def autolabel(rects):
         """Attach a text label above each bar in *rects*, displaying its height."""
         for rect in rects:
@@ -74,20 +48,58 @@ def evaluate_court():
                         xytext=(0, 3),  # 3 points vertical offset
                         textcoords="offset points",
                         ha='center', va='bottom')
+            
 
+
+    ground_truth_dataset = pd.read_csv("ground_truth_data.csv", index_col=0)
+    prediction_dataset = pd.read_csv("prediction_data.csv", index_col=0)
+    tol = 5 # tolerance
+    results = tennis_line_detector.calculate_scores(ground_truth_dataset, prediction_dataset, tol)
+
+
+    labels = list(results.keys())
+    
+    acc_vals = [val['Accuracy'] for val in results.values()]
+    mse_vals = [val['MSE'] for val in results.values()]
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.3  # the width of the bars
+
+    fig, ax = plt.subplots(figsize=(16, 9))
+    rects1 = ax.bar(x - width, acc_vals, width, label='Accuracy', color = 'orange')
+    
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Scores')
+    ax.set_title('Accuracy of the Images')
+    ax.set_xticks(x - width/2)  #  adjust position of x-axis labels
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+ 
     autolabel(rects1)
-    autolabel(rects2)
-    autolabel(rects3)
-
     fig.tight_layout()
-
     plt.show()
+
+    
+    fig, ax = plt.subplots(figsize=(16, 9))
+    rects2 = ax.bar(x - width, mse_vals, width, label='MSE', color = 'orange')
+    
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Scores')
+    ax.set_title('Mean Squared Error')
+    ax.set_xticks(x - width/2)  #  adjust position of x-axis labels
+    ax.set_xticklabels(labels)
+    ax.legend()
+    
+    autolabel(rects2)
+    fig.tight_layout()
+    plt.show()
+
     #print(results)
 
 
-
-
-
 if __name__ == '__main__':
-    create_dataset()
-    #evaluate_court()
+    #create_dataset()
+    evaluate_court()

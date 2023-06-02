@@ -89,22 +89,22 @@ class TennisCourtModel:
     def get_ground_truth_dataset(self):
         ground_truth_pixels = {
 
-            "top_left" :            [(161,82), (596,237), (145,235)],
-            "top_right" :           [(450,82), (1373,239), (428,105)],
-            "bottom_left" :         [(70,323), (276,788), (896,563)],
-            "bottom_right" :        [(542,323), (1689,798), (1054,271)],
-            "middle_left" :         [(126,173), (484,432), (425,362)],
-            "middle_right" :        [(485,173), (1482,435), (688,172)],
-            "left_middle_top" :     [(198,82), (693,238), (188,215)],
-            "left_middle_bottom" :  [(128,324), (455,789), (924,512)],
-            "right_middle_top" :    [(414,82), (1275,240), (400,118)],
-            "right_middle_bottom" : [(483,323), (1506,796), (1041,296)],
-            "middle_top" :          [(306,119), (982,318), (416,198)],
-            "middle_bottom" :       [(306,244), (980,596), (777,318)],
-            "second_middle_left" :  [(187,119), (660,316), (301,261)],
-            "second_middle_right" : [(425,119), (1306,318), (508,148)],
-            "middle_bottom_left" :  [(151,244), (539,594), (683,417)],
-            "middle_bottom_right" : [(461,244), (1423,599), (849,242)]
+            "top_left" :            [(172,84), (101,85), (11,175)],
+            "top_right" :           [(468,84), (503,86), (199,89)],
+            "bottom_left" :         [(78,331), (15,401), (510,393)],
+            "bottom_right" :        [(562,331), (618,401), (616,199)],
+            "middle_left" :         [(136,176), (66,212), (197,259)],
+            "middle_right" :        [(503,176), (548,212), (372,134)],
+            "left_middle_top" :     [(209,84), (150,85), (41,162)],
+            "left_middle_bottom" :  [(138,332), (91,401), (529,359)],
+            "right_middle_top" :    [(431,84), (452,86), (181,97)],
+            "right_middle_bottom" : [(502,331), (543,402), (607,216)],
+            "middle_top" :          [(320,122), (305,137), (191,151)],
+            "middle_bottom" :       [(320,250), (313,303), (431,231)],
+            "second_middle_left" :  [(198,122), (141,137), (115,193)],
+            "second_middle_right" : [(442,122), (467,138), (252,117)],
+            "middle_bottom_left" :  [(161,250), (109,309), (369,296)],
+            "middle_bottom_right" : [(479,249), (515,303), (479,180)]
         }
         ground_truth_dataset = pd.DataFrame(ground_truth_pixels)
         ground_truth_dataset = self.preprocess_dataset(ground_truth_dataset)

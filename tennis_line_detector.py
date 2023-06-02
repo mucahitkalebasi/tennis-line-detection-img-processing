@@ -43,13 +43,19 @@ class CourtLineDetector:
     # Convert a string-formatted tuple to an actual tuple
     return tuple(map(int, s.strip('()').split(',')))
   
+
+
+
+  
+
   def calculate_distances(self, truth_df, pred_df, image, tol):
-    tp, fp, fn = 0, 0, 0
+    tp, fp, mse, n = 0, 0, 0, 0
     for _, truth_row in truth_df.iterrows():
         for _, pred_row in pred_df.iterrows():
             if truth_row['point_name'] == pred_row['point_name']:
                 #print(f"Truth: {truth_row[image]}, Pred: {pred_row[image]}")  # Add this line
                 
+                # TP, FP calculation 
                 a = ast.literal_eval(truth_row[image])
                 b = ast.literal_eval(pred_row[image])
 
@@ -57,23 +63,32 @@ class CourtLineDetector:
                 dy = b[1] - a[1]
                 distance = math.sqrt(dx*dx + dy*dy)
 
+                # MSE calculation
+                squared_distance = dx*dx + dy*dy
+                mse += squared_distance
+                n+=1
+
                 if distance <= tol:
                     tp += 1
                 else:
                     fp += 1
-    fn = len(truth_df) - tp
-    return tp, fp, fn
+
+    
+    
+    return tp, fp, mse, n
   
   def calculate_scores(self, truth_df, pred_df, tol):
     images = [col for col in truth_df.columns if col not in ['point_name']]
     results = {}
     for image in images:
-        tp, fp, fn = self.calculate_distances(truth_df, pred_df, image, tol)
-        print("tp: ", tp, "fp: ",fp, "fn: ", fn)
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
-        f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
-        results[image] = {"Precision": precision, "Recall": recall, "F1-score": f1}
+        tp, fp, mse, n = self.calculate_distances(truth_df, pred_df, image, tol)
+        print("tp: ", tp, "fp: ",fp)
+        
+        accuracy = tp / (tp + fp) if (tp + fp) > 0 else 0
+        mse = mse / n if n > 0 else 0
+
+        print(f"Mean Squared Error: {mse}")
+        results[image] = {"Accuracy": accuracy, "MSE": mse}
     return results
   
   def _detect(self, frame):
