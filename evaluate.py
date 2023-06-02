@@ -1,6 +1,6 @@
 
 import cv2
-from glob import glob
+#from glob import glob
 import matplotlib.pyplot as plt
 import pandas as pd
 from timeit import default_timer
@@ -65,6 +65,7 @@ def evaluate_court():
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
+
     def autolabel(rects):
         """Attach a text label above each bar in *rects*, displaying its height."""
         for rect in rects:
