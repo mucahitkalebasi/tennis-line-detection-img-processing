@@ -82,11 +82,12 @@ class CourtLineDetector:
     results = {}
     for image in images:
         tp, fp, mse, n = self.calculate_distances(truth_df, pred_df, image, tol)
-        print("tp: ", tp, "fp: ",fp)
         
         accuracy = tp / (tp + fp) if (tp + fp) > 0 else 0
         mse = mse / n if n > 0 else 0
 
+        print(image.split("_")[0], image.split("_")[1], ":\t" ,"tp:", tp, "fp: ",fp)
+        print(f"Accuracy: {accuracy}")
         print(f"Mean Squared Error: {mse}")
         results[image] = {"Accuracy": accuracy, "MSE": mse}
     return results

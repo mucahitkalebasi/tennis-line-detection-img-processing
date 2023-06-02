@@ -34,8 +34,8 @@ def create_dataset():
         #plt.show()
 
     prediction_data = tennis_court_model.preprocess_dataset(prediction_data, False)
-    prediction_data.to_csv("prediction_data.csv")
-    ground_truth_dataset.to_csv("ground_truth_data.csv")
+    prediction_data.to_csv("dataframes/prediction_data.csv")
+    ground_truth_dataset.to_csv("dataframes/ground_truth_data.csv")
 
 
 def evaluate_court():
@@ -51,8 +51,8 @@ def evaluate_court():
             
 
 
-    ground_truth_dataset = pd.read_csv("ground_truth_data.csv", index_col=0)
-    prediction_dataset = pd.read_csv("prediction_data.csv", index_col=0)
+    ground_truth_dataset = pd.read_csv("dataframes/ground_truth_data.csv", index_col=0)
+    prediction_dataset = pd.read_csv("dataframes/prediction_data.csv", index_col=0)
     tol = 5 # tolerance
     results = tennis_line_detector.calculate_scores(ground_truth_dataset, prediction_dataset, tol)
 
