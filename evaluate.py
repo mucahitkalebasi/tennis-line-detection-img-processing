@@ -1,15 +1,14 @@
 
 import cv2
-#from glob import glob
 import matplotlib.pyplot as plt
 import pandas as pd
 from timeit import default_timer
-from court_detector import CourtLineDetector
+from tennis_line_detector import CourtLineDetector
 from tennis_court_model import TennisCourtModel
 import numpy as np
 
 
-court_detector = CourtLineDetector()
+tennis_line_detector = CourtLineDetector()
 tennis_court_model = TennisCourtModel()
 
 
@@ -17,13 +16,13 @@ def create_dataset():
     ground_truth_dataset = tennis_court_model.get_ground_truth_dataset()
     prediction_data = tennis_court_model.get_raw_prediction_dataset()
 
-    img_paths = ["court_images\\court_reference1.jpg", "court_images\\court_reference2.jpg", "court_images\\court_reference3.jpg"]
+    img_paths = ["court_images\\court_reference01.jpg", "court_images\\court_reference02.jpg", "court_images\\court_reference03.jpg"]
 
     for idx, img_path in enumerate(img_paths):
         start = default_timer()
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         
-        lines, _ = court_detector.court_detect_from_image(img)
+        lines, _ = tennis_line_detector.court_detect_from_image(img)
 
         temp_dict = dict(zip(tennis_court_model.points, lines)) # for removing unnecessary coordinates
         prediction_data[f"image_{idx}"] = temp_dict.values()
@@ -43,7 +42,7 @@ def evaluate_court():
     ground_truth_dataset = pd.read_csv("ground_truth_data.csv", index_col=0)
     prediction_dataset = pd.read_csv("prediction_data.csv", index_col=0)
     tol = 5 # tolerance
-    results = court_detector.calculate_scores(ground_truth_dataset, prediction_dataset, tol)
+    results = tennis_line_detector.calculate_scores(ground_truth_dataset, prediction_dataset, tol)
 
 
     labels = list(results.keys())
@@ -90,5 +89,5 @@ def evaluate_court():
 
 
 if __name__ == '__main__':
-    #create_dataset()
-    evaluate_court()
+    create_dataset()
+    #evaluate_court()

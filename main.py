@@ -1,15 +1,13 @@
 
-#%%
+
 import cv2
 from glob import glob
-#import matplotlib.pyplot as plt
-#import pandas as pd
 from timeit import default_timer
-from court_detector import CourtLineDetector
+from tennis_line_detector import CourtLineDetector
 from tennis_court_model import TennisCourtModel
-#import numpy as np
 
-court_detector = CourtLineDetector()
+
+tennis_line_detector = CourtLineDetector()
 tennis_court_model = TennisCourtModel()
 
 
@@ -21,7 +19,7 @@ def detect_court():
             start = default_timer()
             img = cv2.imread(img_path, cv2.IMREAD_COLOR)
             
-            _, court_line_img = court_detector.court_detect_from_image(img)
+            _, court_line_img = tennis_line_detector.court_detect_from_image(img)
 
             temp = img_path.split("\\")[-1]
             filename = f"detected_lines/detected_{temp}"

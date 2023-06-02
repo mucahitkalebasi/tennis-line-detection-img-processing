@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-#from matplotlib.pyplot as plt
 from sympy.geometry import Line
 from itertools import combinations
 from tennis_court_model import TennisCourtModel
@@ -25,7 +24,7 @@ class CourtLineDetector:
   
   def court_detect_from_image(self, img):
     tuple_lines = []
-    lines = self.detect(img) # send the img array
+    lines = self._detect(img) # send the img array
 
     for i in range(0, len(lines), 4):
         first_point, second_point =  (int(lines[i]),int(lines[i+1])), (int(lines[i+2]), int(lines[i+3]))
@@ -77,7 +76,7 @@ class CourtLineDetector:
         results[image] = {"Precision": precision, "Recall": recall, "F1-score": f1}
     return results
   
-  def detect(self, frame):
+  def _detect(self, frame):
     """
     Detecting the court in the frame
     """
