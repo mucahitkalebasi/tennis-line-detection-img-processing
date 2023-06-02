@@ -1,4 +1,5 @@
 
+#%%
 import cv2
 from glob import glob
 #import matplotlib.pyplot as plt
@@ -13,7 +14,7 @@ tennis_court_model = TennisCourtModel()
 
 
 def detect_court():
-    img_paths = glob("court_images/*")
+    img_paths = glob("court_images/*.jpg")
 
     try:
         for idx, img_path in enumerate(img_paths):
