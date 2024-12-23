@@ -9,7 +9,7 @@ class TennisCourtModel:
     Tennis Court reference model
     """
     def __init__(self):
-        # initialising points for image configuration
+        # Initializing reference points (in (x, y) format)
         self.top_line = ((286, 561), (1379, 561))
         self.bottom_line = ((286, 2935), (1379, 2935))
         self.center_net = ((286, 1748), (1379, 1748))
