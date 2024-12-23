@@ -10,18 +10,19 @@ class TennisCourtModel:
     """
     def __init__(self):
         # Initializing reference points (in (x, y) format)
-        self.top_line = ((286, 561), (1379, 561))
-        self.bottom_line = ((286, 2935), (1379, 2935))
-        self.center_net = ((286, 1748), (1379, 1748))
-        self.left_court_border = ((286, 561), (286, 2935))
-        self.right_court_border = ((1379, 561), (1379, 2935))
-        self.left_inner_border = ((423, 561), (423, 2935))
-        self.right_inner_border = ((1242, 561), (1242, 2935))
-        self.center_line = ((832, 1110), (832, 2386))
-        self.top_inner_border = ((423, 1110), (1242, 1110))
-        self.bottom_inner_border = ((423, 2386), (1242, 2386))
-        self.top_extension = (832.5, 580)
-        self.bottom_extension = (832.5, 2910)
+        self.top_line = ((286, 561), (1379, 561))             # Top boundary of the court
+        self.bottom_line = ((286, 2935), (1379, 2935))        # Bottom boundary of the court
+        self.center_net = ((286, 1748), (1379, 1748))         # Net line (center line across the width)
+        self.left_court_border = ((286, 561), (286, 2935))    # Left boundary of the court
+        self.right_court_border = ((1379, 561), (1379, 2935)) # Right boundary of the court
+        self.left_inner_border = ((423, 561), (423, 2935))    # Left service border (inner boundary)
+        self.right_inner_border = ((1242, 561), (1242, 2935)) # Right service border (inner boundary)
+        self.center_line = ((832, 1110), (832, 2386))         # Center service line
+        self.top_inner_border = ((423, 1110), (1242, 1110))   # Top service border
+        self.bottom_inner_border = ((423, 2386), (1242, 2386))# Bottom service border
+        self.top_extension = (832.5, 580)                     # An extra top point (for extension)
+        self.bottom_extension = (832.5, 2910)                 # An extra bottom point (for extension)
+
 
         # Preparing court configurations
         self.prepare_court_configs()
@@ -39,26 +40,21 @@ class TennisCourtModel:
         "right_middle_bottom", "middle_top", "middle_bottom", "second_middle_left", "second_middle_right", "middle_bottom_left", 
         "middle_bottom_right"]
 
-        self.raw_dataframe_points = ["top_left",
-                                    "top_right",
-                                    "bottom_left",
-                                    "bottom_right",
-                                    "middle_left",
-                                    "middle_right",
-                                    "left_middle_top",  
-                                    "left_middle_bottom", 
-                                    "right_middle_top", 
-                                    "right_middle_bottom",
-                                    "middle_top",      
-                                    "middle_bottom",
-                                    "second_middle_left", 
-                                    "second_middle_right",
-                                    "middle_bottom_left", 
-                                    "middle_bottom_right"]
+        self.raw_dataframe_points = [
+            "top_left", "top_right", "bottom_left", "bottom_right", "middle_left", 
+            "middle_right", "left_middle_top", "left_middle_bottom", "right_middle_top", 
+            "right_middle_bottom", "middle_top", "middle_bottom", "second_middle_left", 
+            "second_middle_right", "middle_bottom_left", "middle_bottom_right"
+        ]
 
         self.court_img = cv2.cvtColor(cv2.imread('court_configurations/court_reference.png'), cv2.COLOR_BGR2GRAY)
 
     def prepare_court_configs(self):
+        """
+        Prepare a dictionary of court configurations,
+        each configuration is a set of 4 points (or more)
+        that define different areas or lines on the court.
+        """
         self.court_configurations = {1: [*self.top_line, *self.bottom_line],
                                      2: [self.left_inner_border[0], self.right_inner_border[0], 
                                          self.left_inner_border[1], self.right_inner_border[1]],
@@ -87,6 +83,10 @@ class TennisCourtModel:
     
 
     def get_ground_truth_dataset(self):
+        """
+        Create a DataFrame containing ground truth (x, y) pixel locations
+        for various named points on the tennis court. Then preprocess it.
+        """
         ground_truth_pixels = {
 
             "top_left" :            [(172,84), (101,85), (11,175)],
@@ -113,7 +113,12 @@ class TennisCourtModel:
     
 
     def preprocess_dataset(self, dataset, transpose = True):
-        # if ground truth icin
+        """
+        Preprocess a DataFrame of point coordinates.
+        If 'transpose' is True, pivot the DataFrame so that each row 
+        corresponds to a point_name and columns correspond to images.
+        Otherwise, rename columns using 'self.raw_dataframe_points'.
+        """
         if transpose:
             dataset = dataset.T
             dataset = dataset.reset_index()
@@ -134,6 +139,10 @@ class TennisCourtModel:
 
 
     def get_raw_prediction_dataset(self):
+        """
+        Create a blank DataFrame for raw predictions, 
+        with row indexes set to the names of the points.
+        """
         dictionary = {
             "top_left",           
             "top_right",         
@@ -161,7 +170,10 @@ class TennisCourtModel:
 
 
     def construct_court_model(self):
-        # Creating the court reference image based on the line positions
+        """
+        Construct the reference court model image by drawing the court lines
+        on a blank (zeros) image, then dilate the lines and save it.
+        """
         court_img = np.zeros((self.court_h + 2 * self.top_bottom_padding, 
                               self.court_w + 2 * self.right_left_padding), dtype=np.uint8)
         self.draw_lines(court_img)
@@ -171,6 +183,9 @@ class TennisCourtModel:
         return court_img
 
     def draw_lines(self, img):
+        """
+        Draw the court lines on the provided image using the stored line coordinates.
+        """
         cv2.line(img, *self.top_line, 1, self.line_thickness)
         cv2.line(img, *self.bottom_line, 1, self.line_thickness)
         cv2.line(img, *self.top_inner_border, 1, self.line_thickness)
@@ -183,7 +198,7 @@ class TennisCourtModel:
 
     def get_court_lines(self):
         """
-        Returns all lines of the court
+        Returns a list of all line endpoints in the court model.
         """
         all_lines = [*self.top_line, *self.bottom_line, *self.center_net, *self.left_court_border, 
                      *self.right_court_border, *self.left_inner_border, *self.right_inner_border, 
@@ -191,11 +206,15 @@ class TennisCourtModel:
         return all_lines
 
     def get_extension_parts(self):
+        """
+        Return the two extension points defined for the court model.
+        """
         return [self.top_extension, self.bottom_extension]
 
     def save_court_configs(self):
         """
-        Create all configurations of 4 points on court reference
+        For each configuration (4 or more points), draw red circles on
+        the court reference image and save them as separate PNG files.
         """
         for i, config in self.court_configurations.items():
             img = cv2.cvtColor(255 - self.court_img, cv2.COLOR_GRAY2BGR)
@@ -205,7 +224,11 @@ class TennisCourtModel:
 
     def get_court_mask(self, mask_type=0):
         """
-        Get mask of the court
+        Generate and return a mask based on the selected mask_type:
+          0: full court mask
+          1: bottom half only
+          2: top half only
+          3: court-only (no margins)
         """
         mask = np.ones_like(self.court_img)
         if mask_type == 1:  # Bottom half court
@@ -221,5 +244,6 @@ class TennisCourtModel:
 
 
 if __name__ == '__main__':
+    # Instantiate the TennisCourtModel, then construct and save the reference court image.
     tennis_court = TennisCourtModel()
     tennis_court.construct_court_model()
